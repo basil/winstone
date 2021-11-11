@@ -11,8 +11,6 @@ import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.LowResourceMonitor;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.log.JavaUtilLog;
-import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import winstone.cmdline.CmdLineParser;
 import winstone.cmdline.Option;
@@ -340,11 +338,10 @@ public class Launcher implements Runnable {
         if (System.getProperty("java.util.logging.config.file") == null) {
           for (Handler h : java.util.logging.Logger.getLogger("").getHandlers()) {
               if (h instanceof ConsoleHandler) {
-                  ((ConsoleHandler) h).setFormatter(new SupportLogFormatter());
+                  h.setFormatter(new SupportLogFormatter());
               }
           }
         }
-        Log.setLog(new JavaUtilLog());  // force java.util.logging for consistency & backward compatibility
 
         Map args = getArgsFromCommandLine(argv);
 

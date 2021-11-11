@@ -8,7 +8,6 @@
 package winstone;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.B64Code;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import winstone.cmdline.Option;
 
@@ -23,6 +22,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
@@ -33,6 +33,7 @@ import java.security.cert.X509Certificate;
 import java.security.spec.RSAPrivateKeySpec;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.logging.Level;
@@ -133,8 +134,9 @@ public abstract class AbstractSecuredConnectorFactory implements ConnectorFactor
                         in = !in;
                         continue;
                     }
+
                     if ( in ) {
-                        baos.write( B64Code.decode( line ) );
+                        baos.write( Base64.getDecoder().decode( line.getBytes(StandardCharsets.UTF_8) ) );
                     }
                 }
             } finally {
@@ -166,7 +168,7 @@ public abstract class AbstractSecuredConnectorFactory implements ConnectorFactor
      * Used to get the base ssl context in which to create the server socket.
      * This is basically just so we can have a custom location for key stores.
      */
-    protected SslContextFactory getSSLContext( Map args) {
+    protected SslContextFactory.Server getSSLContext( Map args) {
         try {
             String privateKeyPassword;
 
